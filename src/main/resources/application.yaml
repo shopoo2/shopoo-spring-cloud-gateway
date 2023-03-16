@@ -1,0 +1,26 @@
+server:
+  port: 8080
+spring:
+  profiles:
+    active: ${ENVIRONMENT:dev}
+  application:
+    name: gateway
+  cloud:
+    nacos:
+      username: ${NACOS_USERNAME}
+      password: ${NACOS_PASSWORD}
+      discovery:
+        namespace: shopoo-${spring.profiles.active}
+        server-addr: ${NACOS_SERVER_ADDRESS}
+      config:
+        namespace: shopoo-${spring.profiles.active}
+        server-addr: ${NACOS_SERVER_ADDRESS}
+  config:
+    import:
+      - nacos:spring-cloud-gateway.yaml
+      - nacos:spring-cloud-gateway-route.yaml
+      - nacos:shopoo-common.yaml
+      - nacos:shopoo-common-jdbc.yaml
+      - nacos:shopoo-common-redis.yaml
+      - nacos:shopoo-common-dubbo.yaml
+      - nacos:shopoo-common-rocketmq.yaml
