@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8901
 spring:
   profiles:
     active: ${ENVIRONMENT:dev}
