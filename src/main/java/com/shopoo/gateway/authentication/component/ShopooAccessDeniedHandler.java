@@ -1,7 +1,7 @@
 package com.shopoo.gateway.authentication.component;
 
 import com.google.gson.Gson;
-import com.shopoo.dto.Response;
+import com.szmengran.cola.dto.Response;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

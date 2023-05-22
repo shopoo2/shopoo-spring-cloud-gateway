@@ -1,19 +1,19 @@
 server:
-  port: 8080
+  port: 8903
 spring:
   profiles:
     active: ${ENVIRONMENT:dev}
   application:
-    name: gateway
+    name: shopoo-spring-cloud-gateway
   cloud:
     nacos:
       username: ${NACOS_USERNAME}
       password: ${NACOS_PASSWORD}
       discovery:
-        namespace: shopoo-${spring.profiles.active}
+        namespace: szmengran-${spring.profiles.active}
         server-addr: ${NACOS_SERVER_ADDRESS}
       config:
-        namespace: shopoo-${spring.profiles.active}
+        namespace: szmengran-${spring.profiles.active}
         server-addr: ${NACOS_SERVER_ADDRESS}
   config:
     import:
