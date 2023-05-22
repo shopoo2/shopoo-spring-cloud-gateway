@@ -1,7 +1,7 @@
 package com.shopoo.gateway.authentication.component;
 
 import com.nimbusds.jose.JWSObject;
-import com.shopoo.gateway.authentication.config.IgnoreUrlsConfig;
+import com.shopoo.gateway.authentication.config.JwtProperties;
 import com.shopoo.gateway.authentication.constant.AuthConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -21,6 +21,7 @@ import reactor.core.publisher.Mono;
 import java.net.URI;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,7 @@ public class ShopooAuthorizationManager implements ReactiveAuthorizationManager<
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
     @Autowired
-    private IgnoreUrlsConfig ignoreUrlsConfig;
+    private JwtProperties jwtProperties;
 
     @Override
     public Mono<AuthorizationDecision> check(Mono<Authentication> mono, AuthorizationContext authorizationContext) {
@@ -44,7 +45,7 @@ public class ShopooAuthorizationManager implements ReactiveAuthorizationManager<
         URI uri = request.getURI();
         PathMatcher pathMatcher = new AntPathMatcher();
         //白名单路径直接放行
-        List<String> ignoreUrls = ignoreUrlsConfig.getUrls();
+        List<String> ignoreUrls = Arrays.asList(jwtProperties.getIgnoreUrls());
         for (String ignoreUrl : ignoreUrls) {
             if (pathMatcher.match(ignoreUrl, uri.getPath())) {
                 return Mono.just(new AuthorizationDecision(true));

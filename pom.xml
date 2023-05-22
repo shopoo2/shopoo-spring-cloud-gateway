@@ -120,15 +120,15 @@
                     </container>
                 </configuration>
                 <executions>
-                    <!-- 绑定生命周期:当执行package时执行goals中的jib命令 -->
+                    <!-- 					 绑定生命周期:当执行package时执行goals中的jib命令-->
                     <execution>
-                        <!-- <id>latest</id> -->
-                        <!-- <phase>package</phase> -->
+                        <!--                        <id>latest</id>-->
+                        <!--<phase>package</phase>-->
                         <phase>package</phase>
                         <goals>
-                            <!-- buildTar:只在本地生成tar压缩包  : build:生成并上传至你配置的docker仓库 -->
+                            <!--                            buildTar:只在本地生成tar压缩包  : build:生成并上传至你配置的docker仓库-->
                             <goal>build</goal>
-                            <!-- <goal>buildTar</goal> -->
+                            <!--                            <goal>buildTar</goal>-->
                         </goals>
                     </execution>
                 </executions>

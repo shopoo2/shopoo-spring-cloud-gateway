@@ -1,10 +1,11 @@
 package com.shopoo.gateway.authentication.config;
 
-import com.shopoo.gateway.authentication.component.ShopooAuthenticationEntryPoint;
 import com.shopoo.gateway.authentication.component.ShopooAccessDeniedHandler;
+import com.shopoo.gateway.authentication.component.ShopooAuthenticationEntryPoint;
 import com.shopoo.gateway.authentication.component.ShopooAuthorizationManager;
 import com.shopoo.gateway.authentication.constant.AuthConstant;
 import com.shopoo.gateway.authentication.filter.IgnoreUrlsRemoveJwtFilter;
+import jakarta.annotation.Resource;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,8 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
+import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
@@ -30,13 +33,20 @@ import reactor.core.publisher.Mono;
 @EnableWebFluxSecurity
 public class SecurityConfig {
     private final ShopooAuthorizationManager authorizationManager;
-    private final IgnoreUrlsConfig ignoreUrlsConfig;
     private final ShopooAccessDeniedHandler shopooAccessDeniedHandler;
     private final ShopooAuthenticationEntryPoint shopooAuthenticationEntryPoint;
     private final IgnoreUrlsRemoveJwtFilter ignoreUrlsRemoveJwtFilter;
     
+    @Resource
+    private JwtProperties jwtProperties;
+    
     @Bean
-    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
+    public ReactiveJwtDecoder reactiveJwtDecoder() {
+        return NimbusReactiveJwtDecoder.withJwkSetUri(jwtProperties.getUrl()).build();
+    }
+    
+    @Bean
+    public SecurityWebFilterChain gatewaySecurityFilterChain(ServerHttpSecurity http) {
         http.oauth2ResourceServer().jwt()
                 .jwtAuthenticationConverter(jwtAuthenticationConverter());
         //自定义处理JWT请求头过期或签名错误的结果
@@ -44,7 +54,7 @@ public class SecurityConfig {
         //对白名单路径，直接移除JWT请求头
         http.addFilterBefore(ignoreUrlsRemoveJwtFilter, SecurityWebFiltersOrder.AUTHENTICATION);
         http.authorizeExchange()
-                .pathMatchers(ignoreUrlsConfig.getUrls().toArray(new String[ignoreUrlsConfig.getUrls().size()])).permitAll()//白名单配置
+                .pathMatchers(jwtProperties.getIgnoreUrls()).permitAll()//白名单配置
                 .anyExchange().access(authorizationManager)//鉴权管理器配置
                 .and().exceptionHandling()
                 .accessDeniedHandler(shopooAccessDeniedHandler)//处理未授权

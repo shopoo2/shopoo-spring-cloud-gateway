@@ -17,6 +17,7 @@ spring:
         server-addr: ${NACOS_SERVER_ADDRESS}
   config:
     import:
+      - nacos:common-oauth2-resource-server.yaml
       - nacos:spring-cloud-gateway.yaml
       - nacos:spring-cloud-gateway-route.yaml
       - nacos:shopoo-common.yaml

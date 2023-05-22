@@ -1,8 +1,8 @@
 package com.shopoo.gateway.authentication.filter;
 
-import com.shopoo.gateway.authentication.config.IgnoreUrlsConfig;
+import com.shopoo.gateway.authentication.config.JwtProperties;
 import com.shopoo.gateway.authentication.constant.AuthConstant;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.Resource;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -13,6 +13,7 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -21,8 +22,8 @@ import java.util.List;
  */
 @Component
 public class IgnoreUrlsRemoveJwtFilter implements WebFilter {
-    @Autowired
-    private IgnoreUrlsConfig ignoreUrlsConfig;
+    @Resource
+    private JwtProperties jwtProperties;
     
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
@@ -30,7 +31,7 @@ public class IgnoreUrlsRemoveJwtFilter implements WebFilter {
         URI uri = request.getURI();
         PathMatcher pathMatcher = new AntPathMatcher();
         //白名单路径移除JWT请求头
-        List<String> ignoreUrls = ignoreUrlsConfig.getUrls();
+        List<String> ignoreUrls = Arrays.asList(jwtProperties.getIgnoreUrls());
         for (String ignoreUrl : ignoreUrls) {
             if (pathMatcher.match(ignoreUrl, uri.getPath())) {
                 request = exchange.getRequest().mutate().header(AuthConstant.JWT_TOKEN_HEADER, "").build();
