@@ -1,44 +1,44 @@
-package com.shopoo.gateway.authentication.filter;
-
-import com.shopoo.gateway.authentication.config.JwtProperties;
-import com.shopoo.gateway.authentication.constant.AuthConstant;
-import jakarta.annotation.Resource;
-import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.stereotype.Component;
-import org.springframework.util.AntPathMatcher;
-import org.springframework.util.PathMatcher;
-import org.springframework.web.server.ServerWebExchange;
-import org.springframework.web.server.WebFilter;
-import org.springframework.web.server.WebFilterChain;
-import reactor.core.publisher.Mono;
-
-import java.net.URI;
-import java.util.Arrays;
-import java.util.List;
-
-/**
- * 白名单路径访问时需要移除JWT请求头
- * Created by macro on 2020/7/24.
- */
-@Component
-public class IgnoreUrlsRemoveJwtFilter implements WebFilter {
-    @Resource
-    private JwtProperties jwtProperties;
-    
-    @Override
-    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        ServerHttpRequest request = exchange.getRequest();
-        URI uri = request.getURI();
-        PathMatcher pathMatcher = new AntPathMatcher();
-        //白名单路径移除JWT请求头
-        List<String> ignoreUrls = Arrays.asList(jwtProperties.getIgnoreUrls());
-        for (String ignoreUrl : ignoreUrls) {
-            if (pathMatcher.match(ignoreUrl, uri.getPath())) {
-                request = exchange.getRequest().mutate().header(AuthConstant.JWT_TOKEN_HEADER, "").build();
-                exchange = exchange.mutate().request(request).build();
-                return chain.filter(exchange);
-            }
-        }
-        return chain.filter(exchange);
-    }
-}
+//package com.shopoo.gateway.authentication.filter;
+//
+//import com.shopoo.gateway.authentication.config.JwtProperties;
+//import com.shopoo.gateway.authentication.constant.AuthConstant;
+//import jakarta.annotation.Resource;
+//import org.springframework.http.server.reactive.ServerHttpRequest;
+//import org.springframework.stereotype.Component;
+//import org.springframework.util.AntPathMatcher;
+//import org.springframework.util.PathMatcher;
+//import org.springframework.web.server.ServerWebExchange;
+//import org.springframework.web.server.WebFilter;
+//import org.springframework.web.server.WebFilterChain;
+//import reactor.core.publisher.Mono;
+//
+//import java.net.URI;
+//import java.util.Arrays;
+//import java.util.List;
+//
+///**
+// * 白名单路径访问时需要移除JWT请求头
+// * Created by macro on 2020/7/24.
+// */
+//@Component
+//public class IgnoreUrlsRemoveJwtFilter implements WebFilter {
+//    @Resource
+//    private JwtProperties jwtProperties;
+//
+//    @Override
+//    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+//        ServerHttpRequest request = exchange.getRequest();
+//        URI uri = request.getURI();
+//        PathMatcher pathMatcher = new AntPathMatcher();
+//        //白名单路径移除JWT请求头
+//        List<String> ignoreUrls = Arrays.asList(jwtProperties.getIgnoreUrls());
+//        for (String ignoreUrl : ignoreUrls) {
+//            if (pathMatcher.match(ignoreUrl, uri.getPath())) {
+//                request = exchange.getRequest().mutate().header(AuthConstant.JWT_TOKEN_HEADER, "").build();
+//                exchange = exchange.mutate().request(request).build();
+//                return chain.filter(exchange);
+//            }
+//        }
+//        return chain.filter(exchange);
+//    }
+//}

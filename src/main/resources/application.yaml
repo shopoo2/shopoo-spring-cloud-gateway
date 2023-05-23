@@ -24,3 +24,13 @@ spring:
       - nacos:common-jdbc.yaml
       - nacos:common-redis.yaml
       - nacos:common-rocketmq.yaml
+knife4j:
+  gateway:
+    enabled: true
+    strategy: discover
+    discover:
+      service-config:
+        chatgpt:
+          group-name: chatgpt
+          order: 1
+      version: openapi3
