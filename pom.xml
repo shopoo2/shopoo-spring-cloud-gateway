@@ -93,12 +93,6 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-gateway-spring-boot-starter</artifactId>
-            <version>4.1.0</version>
-        </dependency>
     </dependencies>
 
     <build>
